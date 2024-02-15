@@ -19,7 +19,7 @@ If we play around with this file, it gives us the ability to fine tune our graph
 > [!IMPORTANT]
 > Seriously, read the first few sentences of each section, I've intentionally included all the information you'll need to determine if you want to skip the tip.
 
-#### Testing Changes
+#### Testing changes
 
 Since we can't normally modify these options at run-time, it gets pretty annoying to make one change, start the game, load into a map, check the effect it had, close the game, repeat. We can avoid this by *temporarily* modifying `csgo_core\gameinfo.gi` to allow us to adjust Defensive convars at runtime.
 
@@ -34,3 +34,21 @@ Since we can't normally modify these options at run-time, it gets pretty annoyin
 4. Save the file, open the game, and open up console. Run `help "cl_log_tick";`, it should say there's no cvar or command named cl_log_tick, that's expected, if it gives you help info, then filter by defensive here and pick a different convar to test with [here](https://cs2.poggu.me/dumped-data/convar-list). Now without anything before or after, just run `cl_log_tick;` (note: auto-complete suggestions won't include defensive convars, even when enabled), if it simply puts "> cl_log_tick;" in console with no response, you messed up one of the previous steps, however if it responds with the current value, ex. "[Console] cl_log_tick = false", you're good to go.
 
 5. Continue on, this means you can test cs2_video.txt's defensive convars in-game without restarting every single time.
+
+#### Checking current values *without* modifying gameinfo.gi
+
+There's a little-known 'exploit' of sorts that I found back in Limited Test that doesn't have that many practical uses, but it allows you to read the current value of any convar, including defensive, in numerical form. A large-scale implementation of this can be seen in my [CS2 Config](https://github.com/bigfinfrank/cs2/tree/main/config/defensive_values) which is publicly available and I've shared a few times, but how it works is pretty straightforward.
+
+- There's a console command that lets us increment the value of a given convar, this dates back to CSGO, maybe even earlier, it's called `incrementvar`.
+- The syntax for the command is `incrementvar varName minValue maxValue delta`:
+  - `incrementvar` is the command itself
+  - `varName` the name of the console variable we're incrementing, think cl_crosshairsize.
+  - `minValue` is the minimum that you want (in this example) cl_crosshairsize to be set to, in this case, you'd probably want this set to "0" as negative numbers have no use.
+  - `maxValue` is the maximum that you want (in this example) cl_crosshairsize to be set to, in this case, you'd probably want it to be something pretty large, like 7680.
+  - `delta` this is the change in value, so if cl_crosshairsize is currently 5, and you have your minus key bound to `incrementvar cl_crosshairsize 0 7680 -1`, the change in value is -1, so we'll subtract 1 from 5, making it 4, and because 4 is greater than 0 (the minValue) and less than 7680 (the maxValue), cl_crosshairsize will be set to 4.
+- After execution, it will post the name of the convar as well as the new value in console (ex. cl_crosshairsize 4 for the above example)
+- There's also a hidden check that gets run before the convar's value is actually updated, where it will not update the value of a defensive convar (presumably unless you have defenses for them turned off, however I haven't tested that as of yet), **this check does not prevent the value from being posted though**
+- Since it posts the value anyways, if you use a delta of 0, since it won't change the value and will post it in console, we can see the current value of a defensive convar, whereas normally we'd just get not response in console when trying to directly check the current value.
+- From my testing, the respective min/max values are roughly "-340282356779733642748073463979561713663" and "340282356779733642748073463979561713663", so we can use those to make sure we don't get a capped output, alongside a delta of 0, meaning the full command we'd use to check tv_window_size for example, would be `incrementvar "tv_window_size" "-340282356779733642748073463979561713663" "340282356779733642748073463979561713663" "0";`.
+
+<!-- #### Syntax highlighting for cs2_video.txt & gameinfo.gi (and *.cfg) -->
