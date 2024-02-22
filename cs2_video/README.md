@@ -51,4 +51,12 @@ There's a little-known 'exploit' of sorts that I found back in Limited Test that
 - Since it posts the value anyways, if you use a delta of 0, since it won't change the value and will post it in console, we can see the current value of a defensive convar, whereas normally we'd just get not response in console when trying to directly check the current value.
 - From my testing, the respective min/max values are roughly "-340282356779733642748073463979561713663" and "340282356779733642748073463979561713663", so we can use those to make sure we don't get a capped output, alongside a delta of 0, meaning the full command we'd use to check tv_window_size for example, would be `incrementvar "tv_window_size" "-340282356779733642748073463979561713663" "340282356779733642748073463979561713663" "0";`.
 
-<!-- #### Syntax highlighting for cs2_video.txt & gameinfo.gi (and *.cfg) -->
+#### Syntax highlighting for cs2_video.txt & gameinfo.gi (and *.cfg)
+
+Syntax highlighting (coloring different parts of a file in your text editor) can make a lot of these formats SIGNIFICANTLY easier to read, you can see an example [here](https://github.com/bigfinfrank/misc-cs2/blob/main/cs2_video/syntax-highlighting-example.gif). In a more familiar example, if you were making a .cfg file and had `sv_cheats "true";`, it would change the text color of the prefix (sv_), the primary portion of the command (cheats), the value ("true"), and the terminator (;). This makes it a lot easier to navigate these files and tell exactly what you're looking at with just a quick glance- it isn't 2015 anymore, stop using Notepad++.
+
+My recommendations are:
+- [Visual Studio Code](https://code.visualstudio.com/download) - don't get scared off by the name! It is aimed at programmers, however it's really just an extremely versatile and customizable text editor.
+- [Source Engine Tools](https://marketplace.visualstudio.com/items?itemName=ChaosInitiative.source-tools) - this leverages the customizability of VSC, adding syntax highlighting for the KeyValues format used in cs2_video.txt (remember because valve made the file end in .txt, you'll have to change the "Language Mode" from Plain Text to Valve KeyValues File in the bottom right once you open the file)
+- [CFG Games Support](https://marketplace.visualstudio.com/items?itemName=joelcancela.cfg-games-support) - this one will add syntax highlighting for Source (and Source 2) games' cfg files (and therefore console commands). This might prove useful if you end up storing a bunch of the values in cs2_video.txt in a cfg file so you can swap between a few custom "presets" for back and forth comparison- definitely not necessary if you don't think you'll be doing this, but having it just in case won't hurt.
+
